@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bubble Chat Room</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Start Screen -->
+  <div id="start-screen" class="screen active">
+    <div class="circle">
+      <h1>B u b b l e</h1>
+      <p>Chat Room</p>
+      <input type="text" id="username-input" placeholder="Enter your username" />
+      <button id="start-btn">START</button>
+    </div>
+  </div>
+
+  <!-- Chat Room -->
+  <!-- Chat Room -->
+<div id="chat-room" class="screen">
+  <div class="chat-container">
+    <div class="chat-header">
+      <h2>Bubble</h2>
+    </div>
+
+    <!-- Messages Section -->
+    <div id="messages" class="messages"></div>
+
+    <!-- Typing Indicator -->
+    <div id="typing-indicator" class="typing-indicator"></div>
+
+    <!-- Chat Input -->
+    <div class="chat-input">
+      <input type="text" id="message-input" placeholder="Type your message..." />
+      <button id="send-btn">➤</button>
+    </div>
+  </div>
+</div>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
