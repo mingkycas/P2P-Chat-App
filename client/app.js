@@ -1,73 +1,69 @@
 const socket = io();
 
+// DOM Elements
 const startScreen = document.getElementById('start-screen');
 const chatRoom = document.getElementById('chat-room');
 const usernameInput = document.getElementById('username-input');
 const startButton = document.getElementById('start-btn');
 const messageInput = document.getElementById('message-input');
 const sendButton = document.getElementById('send-btn');
-const messagesContainer = document.getElementById('messages');
-const typingIndicator = document.getElementById('typing-indicator');
 
 let username = "";
 
 // Start the chatroom
 startButton.addEventListener('click', () => {
-  username = usernameInput.value.trim();
-  if (username) {
-    socket.emit('join', username);
-    startScreen.classList.remove('active');
-    chatRoom.classList.add('active');
-  } else {
-    alert("Please enter your username.");
+  if (!username) {
+    username = usernameInput.value.trim();
+    if (username) {
+      socket.emit('join', username); // Notify the server about the username
+      startScreen.classList.remove('active'); // Hide start screen
+      chatRoom.classList.add('active'); // Show chatroom
+      displayAnnouncement(`Welcome, ${username}!`); // Show welcome message
+    } else {
+      alert('Please enter a username.');
+    }
   }
 });
 
-// Typing indicator
-let typingTimeout;
-
-messageInput.addEventListener('input', () => {
-  socket.emit('typing', username);
-  clearTimeout(typingTimeout);
-  typingTimeout = setTimeout(() => {
-    socket.emit('stop-typing');
-  }, 1000);
-});
-
-messageInput.addEventListener('blur', () => {
-  socket.emit('stop-typing');
+// Handle 'join' event from the server
+socket.on('join', (newUser) => {
+  if (newUser !== username) { // Avoid duplicating your own "has joined" notification
+    displayNotification(`${newUser} has joined the chat.`);
+  }
 });
 
 // Send a message
 sendButton.addEventListener('click', () => {
   const message = messageInput.value.trim();
   if (message) {
-    socket.emit('message', { username, message });
-    displayMessage(`You: ${message}`, 'you');
+    socket.emit('message', { username, message }); // Send message to the server
+    displayMessage(`You: ${message}`, 'you'); // Display your message
     messageInput.value = '';
     socket.emit('stop-typing');
   }
 });
 
-// Receive Messages
+// Handle incoming messages
 socket.on('message', ({ username: sender, message }) => {
-  displayMessage(`${sender}: ${message}`, 'peer');
+  displayMessage(`${sender}: ${message}`, sender === username ? 'you' : 'peer');
 });
 
-// Display Typing Indicator
+// Typing indicator
+messageInput.addEventListener('input', () => {
+  socket.emit('typing', username);
+});
+
+messageInput.addEventListener('blur', () => {
+  socket.emit('stop-typing');
+});
+
+// Handle typing events
 socket.on('typing', (user) => {
+  const typingIndicator = document.getElementById('typing-indicator');
   typingIndicator.textContent = `${user} is typing...`;
 });
 
 socket.on('stop-typing', () => {
+  const typingIndicator = document.getElementById('typing-indicator');
   typingIndicator.textContent = '';
 });
-
-// Display Messages
-function displayMessage(message, type) {
-  const msg = document.createElement('div');
-  msg.textContent = message;
-  msg.classList.add('message', type);
-  messagesContainer.appendChild(msg);
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}

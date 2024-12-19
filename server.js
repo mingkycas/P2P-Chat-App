@@ -10,16 +10,20 @@ const io = socketIo(server);
 app.use(express.static(path.join(__dirname, 'client')));
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  console.log('A user connected.');
 
+  // Handle when a user joins the chat
   socket.on('join', (username) => {
-    console.log(`${username} has joined.`);
+    console.log(`${username} has joined the chat.`);
+    socket.broadcast.emit('join', username); // Notify others
   });
 
+  // Handle messages
   socket.on('message', (data) => {
-    socket.broadcast.emit('message', data);
+    io.emit('message', data); // Broadcast to all users
   });
 
+  // Typing indicator
   socket.on('typing', (username) => {
     socket.broadcast.emit('typing', username);
   });
@@ -28,11 +32,12 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('stop-typing');
   });
 
+  // Handle disconnection
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
+    console.log('A user disconnected.');
   });
 });
 
 server.listen(8080, () => {
-  console.log('Server running on http://localhost:8080');
+  console.log('Server is running on http://localhost:8080');
 });

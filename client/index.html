@@ -10,37 +10,42 @@
   <!-- Start Screen -->
   <div id="start-screen" class="screen active">
     <div class="circle">
-      <h1>B u b b l e</h1>
+      <h1>Bubble</h1>
       <p>Chat Room</p>
-      <input type="text" id="username-input" placeholder="Enter your username" />
+      <input type="text" id="username-input" placeholder="Enter your username">
       <button id="start-btn">START</button>
     </div>
   </div>
 
   <!-- Chat Room -->
-  <!-- Chat Room -->
-<div id="chat-room" class="screen">
-  <div class="chat-container">
-    <div class="chat-header">
-      <h2>Bubble</h2>
-    </div>
+  <div id="chat-room" class="screen">
+    <div class="chat-container">
+      <!-- Header -->
+      <div class="chat-header">
+        <h2>Bubble</h2>
+        <div id="announcements" class="announcements"></div> <!-- Announcements Container -->
+      </div>
 
-    <!-- Messages Section -->
-    <div id="messages" class="messages"></div>
+      <!-- Notifications -->
+      <div id="notifications" class="notifications"></div> <!-- Notifications Container -->
 
-    <!-- Typing Indicator -->
-    <div id="typing-indicator" class="typing-indicator"></div>
+      <!-- Messages Section -->
+      <div id="messages" class="messages"></div>
 
-    <!-- Chat Input -->
-    <div class="chat-input">
-      <input type="text" id="message-input" placeholder="Type your message..." />
-      <button id="send-btn">➤</button>
+      <!-- Typing Indicator -->
+      <div id="typing-indicator" class="typing-indicator"></div>
+
+      <!-- Chat Input -->
+      <div class="chat-input">
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button id="send-btn">➤</button>
+      </div>
     </div>
   </div>
-</div>
 
   <!-- Scripts -->
   <script src="/socket.io/socket.io.js"></script>
+  <script src="ui.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

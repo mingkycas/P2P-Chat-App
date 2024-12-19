@@ -1,66 +1,58 @@
-// Function to update UI elements (can be expanded as needed)
-function updateUI(status, message) {
+// Display a message in the chat
+function displayMessage(message, type = 'peer') {
     const messagesContainer = document.getElementById('messages');
-    const callButton = document.getElementById('call-btn');
+    const messageContainer = document.createElement('div');
+    messageContainer.classList.add('message', type);
+  
+    // Message text
+    const messageText = document.createElement('div');
+    messageText.textContent = message;
+  
+    // Timestamp
+    const timestamp = document.createElement('div');
+    const now = new Date();
+    const hours = now.getHours() % 12 || 12; // 12-hour format
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+    timestamp.textContent = `${hours}:${minutes} ${ampm}`;
+    timestamp.classList.add('timestamp');
+  
+    // Append text and timestamp
+    messageContainer.appendChild(messageText);
+    messageContainer.appendChild(timestamp);
+    messagesContainer.appendChild(messageContainer);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+  
+  // Display a welcome announcement
+  function displayAnnouncement(message) {
+    const announcementsContainer = document.getElementById('announcements');
+    announcementsContainer.textContent = message;
+  }
+  
+  // Display system notifications
+  function displayNotification(message) {
+    const notificationsContainer = document.getElementById('notifications');
+    notificationsContainer.textContent = message;
+    notificationsContainer.style.display = 'block';
+  
+    // Remove notification after 5 seconds
+    setTimeout(() => {
+      notificationsContainer.style.display = 'none';
+      notificationsContainer.textContent = '';
+    }, 5000);
+  }
+  
+  // Update UI state (optional helper)
+  function updateUI(status) {
     const sendButton = document.getElementById('send-btn');
     const messageInput = document.getElementById('message-input');
-    
-    // Show status updates in the chat area
-    if (status === 'connecting') {
-        displayMessage('Connecting to peer...');
-        callButton.disabled = true;  // Disable call button while connecting
-        sendButton.disabled = true;  // Disable send button
-    }
-    else if (status === 'connected') {
-        displayMessage('You are now connected!');
-        callButton.disabled = true;  // Disable call button once connected
-        sendButton.disabled = false;  // Enable send button once connected
-    }
-    else if (status === 'disconnected') {
-        displayMessage('Disconnected from peer.');
-        callButton.disabled = false; // Enable call button to reconnect
-        sendButton.disabled = true;  // Disable send button once disconnected
-    }
-    else if (status === 'message') {
-        displayMessage(message);
-    }
-    else if (status === 'error') {
-        displayMessage('An error occurred. Please try again.');
-    }
-    else {
-        displayMessage('Ready to chat!');
-    }
-    
-    // Update the message input field
-    if (messageInput.value.trim() !== "") {
-        sendButton.disabled = false; // Enable send button when message is not empty
+    if (status === 'connected') {
+      sendButton.disabled = false;
+      messageInput.disabled = false;
     } else {
-        sendButton.disabled = true;  // Disable send button when message is empty
+      sendButton.disabled = true;
+      messageInput.disabled = true;
     }
-}
-
-// Helper function to display messages in the chat container
-function displayMessage(message) {
-    const messagesContainer = document.getElementById('messages');
-    const messageElement = document.createElement('p');
-    messageElement.textContent = message;
-    messagesContainer.appendChild(messageElement);
-
-    // Automatically scroll to the bottom when a new message is added
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-// Function to clear chat messages
-function clearMessages() {
-    const messagesContainer = document.getElementById('messages');
-    messagesContainer.innerHTML = '';  // Clear all messages
-}
-
-// Function to handle when a new message is received or sent
-function handleNewMessage(message, isFromPeer = true) {
-    if (isFromPeer) {
-        updateUI('message', `Peer: ${message}`);
-    } else {
-        updateUI('message', `You: ${message}`);
-    }
-}
+  }
+  
