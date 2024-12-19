@@ -1,7 +1,7 @@
 /* General Reset */
 * {
-  margin: 0;
-  padding: 0;
+  margin: 20;
+  padding: 20;
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }

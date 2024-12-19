@@ -37,15 +37,18 @@ sendButton.addEventListener('click', () => {
   const message = messageInput.value.trim();
   if (message) {
     socket.emit('message', { username, message }); // Send message to the server
-    displayMessage(`You: ${message}`, 'you'); // Display your message
-    messageInput.value = '';
-    socket.emit('stop-typing');
+    displayMessage(`${username}: ${message}`, 'you'); // Display your message as 'you'
+    messageInput.value = ''; // Clear the input field
+    socket.emit('stop-typing'); // Stop the typing indicator
   }
 });
 
 // Handle incoming messages
 socket.on('message', ({ username: sender, message }) => {
-  displayMessage(`${sender}: ${message}`, sender === username ? 'you' : 'peer');
+  // Only display messages from others, not your own
+  if (sender !== username) {
+    displayMessage(`${sender}: ${message}`, 'peer'); // Display the message as a peer message
+  }
 });
 
 // Typing indicator
